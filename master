@@ -1,0 +1,85 @@
+/*This program will ask for the amount of money you want to borrow, at what interest, and what your monthly amount will be. It's divided into 3 methods. 1st method to get the user input. 2nd method verfies if the user input is a valid number. 3rd method does the calculations on the user input. */
+
+import java.util.Scanner;
+import java.text.DecimalFormat;
+
+class Main 
+{
+  public static void main(String[] args) 
+  {
+  getUI();
+  }
+  
+  static void getUI() //1st method to get user input. 
+{
+  double balance = getPOSNumber("how much do you want to borrow?");
+  
+  double rate=getPOSNumber("What is the annual interest rate expressed as a percent?");
+  
+  double monthly_payment = getPOSNumber("What is the monthly payment amount?");
+  
+
+  double monthly_rate = ((rate/100)/12);
+  
+  double interest = (balance * monthly_rate);
+  
+  boolean does_not_meet_interest = monthly_payment > interest;
+  
+    if (!does_not_meet_interest)
+      {
+      System.out.println("You must make payments of at least: $" + (1+(balance * (monthly_rate))));
+      System.out.println("Because your monthly interest is: $" + (balance * (monthly_rate)));
+      }
+      
+    else {
+      payOFFLoan(balance, monthly_rate, monthly_payment);
+    }
+}
+
+  static double getPOSNumber(String prompt) // 2nd method to determine if user input is valid
+    {
+  Scanner sc = new Scanner(System.in);
+    System.out.println(prompt);
+    double userInput = sc.nextDouble();
+    
+    while (userInput <= 0) 
+      {
+        System.out.println("Please enter a positive number");
+        userInput = sc.nextDouble();
+      }
+    
+    return userInput;
+    }
+    
+ static void payOFFLoan(double balance, double monthly_rate, double monthly_payment) //third method to do the calculations on the user input. 
+ {
+        DecimalFormat money = new DecimalFormat("#,##0.00");
+        int i = 0;
+	      double new_balance = balance;
+	      double total_interest = 0;
+	  
+	    while(monthly_payment < new_balance)  // repeat until balance is lower than monthly payment
+	    {
+	       total_interest = ((new_balance * monthly_rate)+total_interest);
+	      
+	      new_balance = new_balance * (1+monthly_rate);  // add monthly interest to the balance.
+       
+	      new_balance = new_balance - monthly_payment; // subtracting monthly payment from new balance 
+	       
+	      i++;     // counting the month
+	    }
+        	    
+	      new_balance = new_balance * (1+monthly_rate);  
+	      new_balance = new_balance - monthly_payment;
+	      double final_balance = monthly_payment + new_balance;
+	      total_interest = i * monthly_payment+ final_balance - balance; 
+	   
+	    System.out.println();
+	    System.out.println("After " + (1+i) + "months at " +(100* monthly_rate)+ "% interest per month, \nand a monthly payment of $" + money.format(monthly_payment) + 
+	       " your final payment will be $" + money.format(final_balance) + "\nThe total amount of interest you will pay during that time is $" + money.format(total_interest));
+ }
+ 
+ 
+  
+  
+}
